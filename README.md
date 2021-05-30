@@ -7,4 +7,3 @@ This is the packaging of [galène](https://galene.org/) as a [docker image](http
 ## Usage
 
 Please see the [install directory](https://github.com/sebt3/galene/tree/master/install) for usage examples.
-
