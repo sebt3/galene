@@ -1,0 +1,30 @@
+version: '3.5'
+networks:
+  public:
+    external: true
+volumes:
+  voldata:
+  volgroups:
+  volrecordings:
+services:
+  galene:
+    image: sebt3/galene:latest
+    command: -insecure
+    volumes:
+      - voldata:/data
+      - volgroups:/groups
+      - volrecordings:/recordings
+    networks:
+      - public
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.galene.rule=Host(`${DOMAIN}`)
+        - traefik.http.routers.galene.tls=true
+        - traefik.http.routers.galene.tls.certresolver=le
+        - traefik.http.routers.galene.entrypoints=websecure
+        - traefik.http.services.galene.loadbalancer.server.port=8443
+        - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+        - traefik.http.routers.redirect.rule=Host(`${DOMAIN}`)
+        - traefik.http.routers.redirect.middlewares=redirect-to-https
+        - traefik.http.routers.redirect.entrypoints=web

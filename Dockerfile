@@ -6,11 +6,12 @@ WORKDIR /galene
 COPY .tags /tmp/
 RUN git pull \
  && git checkout tags/galene-$(sed 's/,.*//' /tmp/.tags) \
- && mkdir data groups recordings \
- && CGO_ENABLED=0 go build -ldflags='-s -w'
+ && mkdir -p /target/data /target/groups /target/recordings \
+ && CGO_ENABLED=0 go build -ldflags='-s -w' \
+ && cp -Rapv static galene /target
 
 FROM scratch
-COPY --from=build /galene/static /galene/galene /galene/data /galene/groups /galene/recordings /
+COPY --from=build /target/ /
 VOLUME ["/data", "/groups", "/recordings"]
 ENTRYPOINT ["/galene"]
 EXPOSE 8443
